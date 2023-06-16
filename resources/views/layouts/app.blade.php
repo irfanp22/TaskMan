@@ -12,7 +12,6 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         
         <!-- Scripts -->
-        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
@@ -33,5 +32,12 @@
                 {{ $slot }}
             </main>
         </div>
+    <script type="module">
+        $(document).ready(function() {
+            $('.form').on('submit', function() {
+                $('.btn-form').attr('disabled', true);
+            });
+        });
+    </script>    
     </body>
 </html>

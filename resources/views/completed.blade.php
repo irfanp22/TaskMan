@@ -10,15 +10,16 @@
                 <div class="p-6 mb-3 text-center text-4xl font-bold text-gray-900 dark:text-gray-100">
                     {{ __("Completed Tasks List") }}
                 </div>
-                <div class="container">
-                    <table id="tasks">
+                <div class="px-4 py-2">
+                    <a href="{{ route('dashboard') }}"><x-button><i class="fa-solid fa-arrow-left fa-lg"></i></x-button></a>
+                    <table id="tasks" class="w-full border-collapse text-gray-900 dark:text-gray-100">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Judul</th>
-                                <th>Deskripsi</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
+                                <th class="py-2">No</th>
+                                <th class="py-2">Judul</th>
+                                <th class="py-2">Deskripsi</th>
+                                <th class="py-2 w-1/6">Status</th>
+                                <th class="py-2 w-1/6">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -27,31 +28,39 @@
                             @endphp
                             @foreach ($data as $d)
                             <tr>
-                                <td>{{ $no++ }}</td>
-                                <td>{{ $d->judul }}</td>
-                                <td>{{ $d->deskripsi }}</td>
-                                <td>{{ $d->status->status }}
-                                    @if ($d->status_id == 1)
-                                        <a href="tasks/completed">info</a>
-                                    @else
-                                        <a href="tasks/incomplete">info</a>
-                                    @endif
+                                <td class="py-2">{{ $no++ }}</td>
+                                <td class="py-2">{{ $d->judul }}</td>
+                                <td class="py-2">{{ $d->deskripsi }}</td>
+                                <td class="py-2">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-sm font-medium text-white 
+                                        {{ $d->status_id == 1 ? 'bg-green-500' : 'bg-yellow-500' }} 
+                                        dark:{{ $d->status_id == 1 ? 'bg-green-100' : 'bg-yellow-100' }}">
+                                        {{ $d->status->status }}
+                                    </span>
                                 </td>
-                                <td>
-                                    <form action="{{ route('status', ['id' => $d->id]) }}" method="post">
-                                        @csrf
-                                        @method('put')
-                                        <x-primary-button>{{ __('Stat') }}</x-primary-button>
-                                    </form>
-
-                                    <form action="tasks/{{ $d->id }}" method="get">
-                                        <x-primary-button>{{ __('Edit') }}</x-primary-button>
-                                    </form> | 
-                                    <form action="{{ route('hapus', ['id' => $d->id]) }}" method="post">
-                                        @csrf
-                                        @method('delete')
-                                        <x-primary-button>{{ __('Hapus') }}</x-primary-button>
-                                    </form></td>
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <form action="{{ route('status', ['id' => $d->id]) }}" method="post" class="form">
+                                            @csrf
+                                            @method('put')
+                                            @if ($d->status_id == 1)
+                                                <x-primary-button><i class="fa-solid fa-xmark fa-xl"></i></x-primary-button>
+                                            @else
+                                                <x-primary-button><i class="fa-solid fa-check fa-xl"></i></x-primary-button>
+                                            @endif
+                                        </form>
+                                        |
+                                        <form action="tasks/{{ $d->id }}" method="get" class="form">
+                                            <x-primary-button><i class="fa-regular fa-pen-to-square fa-xl"></i></x-primary-button>
+                                        </form>
+                                        |
+                                        <form action="{{ route('hapus', ['id' => $d->id]) }}" method="post" class="form">
+                                            @csrf
+                                            @method('delete')
+                                            <x-primary-button><i class="fa-solid fa-trash-can fa-xl"></i></x-primary-button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -60,5 +69,18 @@
             </div>
         </div>
     </div>    
-
+    <script type="module">
+        $(document).ready(function(){
+            $('#tasks').DataTable({
+                order: [],
+                columnDefs: [
+                { targets: [0], orderable: false, searchable: false, orderFixed: true}
+                ]
+            })
+            styling();
+            $('#tasks_filter input[type="search"]').on('input', function(){
+                styling();
+            })
+        })
+    </script>
 </x-app-layout>

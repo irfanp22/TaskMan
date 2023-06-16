@@ -1,5 +1,5 @@
 <section>
-    <form method="post" action="{{ $data ? route('edit.update', $data->id) : route('tambah.store') }}" class="">
+    <form method="post" action="{{ $data ? route('edit.update', $data->id) : route('tambah.store') }}" class="form">
         @csrf
         @if($data)
             @method('PUT')
